@@ -41,6 +41,7 @@ function playPodcast() {
       volume: 0.5,
       onplay: function() {
         showPlayButton = false;
+        requestAnimationFrame(step.bind(self));
         duration.innerHTML = formatTime(Math.round(sound.duration()));
       },
       onpause: function() {
@@ -76,6 +77,18 @@ function pause() {
     // Show the play button.
     playBtn.style.display = 'block';
     pauseBtn.style.display = 'none';
+}
+
+function step() {
+    // Determine our current seek position.
+    var seek = sound.seek() || 0;
+    timer.innerHTML = formatTime(Math.round(seek));
+    progress.style.width = (((seek / sound.duration()) * 100) || 0) + '%';
+
+    // If the sound is still playing, continue stepping.
+    if (sound.playing()) {
+      requestAnimationFrame(step.bind(this));
+    }
 }
 </script>
 
@@ -135,7 +148,7 @@ function pause() {
     </div>
     <div class="space-y-2">
       <div class="bg-gray-200 dark:bg-black rounded-full overflow-hidden">
-        <div class="bg-lime-500 dark:bg-lime-400 w-1/2 h-1.5" role="progressbar" aria-valuenow="1456" aria-valuemin="0" aria-valuemax="4550"></div>
+        <div class="bg-black dark:bg-lime-400 w-1/2 h-1.5" id="progress" role="progressbar" aria-valuenow="1456" aria-valuemin="0" aria-valuemax="4550"></div>
       </div>
       <div class="text-gray-500 dark:text-gray-400 flex justify-between text-sm font-medium tabular-nums">
         <div id="timer">0:00</div>

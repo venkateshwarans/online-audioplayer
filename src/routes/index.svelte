@@ -6,6 +6,7 @@
 
   let src;
   let sound;
+  let showPlayButton = true;
 
   onMount(async () => {
     window.navigator.clipboard.readText().then(text => {
@@ -39,8 +40,12 @@ function playPodcast() {
       loop: true,
       volume: 0.5,
       onplay: function() {
+        showPlayButton = false;
         duration.innerHTML = formatTime(Math.round(sound.duration()));
       },
+      onpause: function() {
+        showPlayButton = true;
+      }
     });
     sound.play();
 }
@@ -156,20 +161,24 @@ function pause() {
         <path d="M17 0L9 6l8 6V0z" fill="currentColor" />
       </svg>
     </button>
+    {#if showPlayButton === true}
+      <button type="button" class="mx-auto" on:click={play}>
+        <svg width="50" height="50" class="text-gray-300 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </button>
+    {:else}
+      <button type="button" class="mx-auto" on:click={pause}>
+        <svg width="50" height="50" fill="none">
+          <circle class="text-gray-300 dark:text-gray-500" cx="25" cy="25" r="24" stroke="currentColor" stroke-width="1.5" />
+          <path d="M18 16h4v18h-4V16zM28 16h4v18h-4z" fill="currentColor" />
+        </svg>
+      </button>
+    {/if}
 
-    <button type="button" class="mx-auto" on:click={play}>
-      <svg width="50" height="50" fill="none">
-        <circle class="text-gray-300 dark:text-gray-500" cx="25" cy="25" r="24" stroke="currentColor" stroke-width="1.5" />
-        <path d="M18 16h4v18h-4V16zM28 16h4v18h-4z" fill="currentColor" />
-      </svg>
-    </button>
 
-    <button type="button" class="mx-auto" on:click={pause}>
-      <svg width="50" height="50" fill="none">
-        <circle class="text-gray-300 dark:text-gray-500" cx="25" cy="25" r="24" stroke="currentColor" stroke-width="1.5" />
-        <path d="M18 16h4v18h-4V16zM28 16h4v18h-4z" fill="currentColor" />
-      </svg>
-    </button>
+
 
     <button type="button" class="mx-auto">
       <svg width="34" height="39" fill="none">
